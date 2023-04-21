@@ -92,7 +92,7 @@ jobs:
           name: Install PyTorch
           command: |
             python3 -V
-            python3 -m pip install torch==<< parameters.torch >>+<< parameters.cuda >> --extra-index-url https://download.pytorch.org/whl/+<< parameters.cuda >>
+            python3 -m pip install torch==<< parameters.torch >>+<< parameters.cuda >> --extra-index-url https://download.pytorch.org/whl/<< parameters.cuda >>
             python3 -m pip install torchmetrics torcheval transformers
       - run:
           name: Run unittests
