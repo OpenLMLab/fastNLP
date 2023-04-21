@@ -65,6 +65,42 @@ jobs:
             coverage run -m pytest . -m torch
             coverage xml -i
             coverage report -m -i
+            
+  build_torch_cuda:
+    parameters:
+      # The python version must match available image tags in
+      # https://circleci.com/developer/images/image/cimg/python
+      python:
+        type: string
+        default: "3.7.4"
+      torch:
+        type: string
+      cuda:
+        type: string
+    machine:
+      image: ubuntu-2004-cuda-11.4:202110-01
+    resource_class: gpu.nvidia.small
+    steps:
+      - checkout
+      - run:
+          name: Install Test Dependencies
+          command: |
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install pytest coverage scikit-learn nltk
+      - run:
+          name: Install PyTorch
+          command: |
+            python -V
+            pip install torch==<< parameters.torch >>+<< parameters.cuda >> --extra-index-url https://download.pytorch.org/whl/+<< parameters.cuda >>
+            pip install torchmetrics torcheval transformers
+      - run:
+          name: Run unittests
+          command: |
+            cd tests/
+            coverage run -m pytest . -m torch
+            coverage xml -i
+            coverage report -m -i
 
   build_paddle_cpu:
     parameters:
@@ -175,6 +211,11 @@ workflows:
           name: Test CPU - Torch 1.12
           python: "3.9.0"
           torch: "1.12.0"
+      - build_torch_cuda:
+          name: Test CPU - Torch 1.12
+          python: "3.9.0"
+          torch: "1.12.0"
+          cuda: "cu114
       - build_paddle_cpu:
           name: Test CPU - PaddlePaddle
       - build_oneflow_cpu:
