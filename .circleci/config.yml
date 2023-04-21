@@ -215,7 +215,7 @@ workflows:
           name: Test GPU - Torch 1.12
           python: "3.9.0"
           torch: "1.12.0"
-          cuda: "cu114"
+          cuda: "cu116"
       - build_paddle_cpu:
           name: Test CPU - PaddlePaddle
       - build_oneflow_cpu:
